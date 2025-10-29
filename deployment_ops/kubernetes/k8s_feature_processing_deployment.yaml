@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feature-processing-job
+  labels:
+    app: feature-processor
+spec:
+  replicas: 1 # Typically one or a few for batch processing
+  selector:
+    matchLabels:
+      app: feature-processor
+  template:
+    metadata:
+      labels:
+        app: feature-processor
+    spec:
+      containers:
+      - name: feature-processor
+        image: snapptech/feature-processor:latest # Placeholder, build this Docker image
+        env:
+        - name: KAFKA_BROKERS
+          valueFrom:
+            configMapKeyRef:
+              name: fraud-config
+              key: kafka_brokers
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: fraud-config
+              key: redis_host
+        - name: SPARK_MASTER # Point to a Spark master if running in client mode or cluster
+          value: "spark://spark-master-svc:7077" # Example Spark master service name
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "1000m"
+          limits:
+            memory: "4Gi"
+            cpu: "2000m"
+      restartPolicy: OnFailure # Ensure job restarts if it fails
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fraud-config
+data:
+  kafka_brokers: "kafka-broker-0:9092,kafka-broker-1:9092" # Example Kafka brokers
+  redis_host: "fraud-redis-cache.snapp.local"

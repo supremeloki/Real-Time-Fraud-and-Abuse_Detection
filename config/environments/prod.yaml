@@ -1,0 +1,21 @@
+environment:
+  name: "production"
+  debug_mode: false
+  log_level: "INFO"
+  kafka_brokers: "kafka-broker-0:9092,kafka-broker-1:9092,kafka-broker-2:9092"
+  kafka_input_topic: "snapp.events.prod"
+  kafka_output_topic: "snapp.fraud_alerts.prod"
+  redis_host: "fraud-redis-cache.snapp.local"
+  redis_port: 6379
+  mlflow_tracking_uri: "http://mlflow.snapp.local:5000"
+  model_storage_path: "s3://snapp-ml-models/fraud-detection"
+  feature_store_type: "redis_cluster"
+  database_url: "postgresql://fraud_prod:prod_password@prod-db.snapp.local:5432/fraud_prod"
+  api_host: "fraud-api.snapp.local"
+  api_port: 443
+
+model_config:
+  use_global_params: true
+
+thresholds:
+  use_global_thresholds: true

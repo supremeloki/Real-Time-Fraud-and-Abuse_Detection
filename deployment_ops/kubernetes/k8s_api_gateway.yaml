@@ -1,0 +1,96 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/v1.24.3-standalone-strict/ingress-networking-v1.json
+# Creative Kubernetes API Gateway Configuration
+# This manifest defines ingress routing and TLS certificate management for the Snapp Fraud Detection service
+# Enhanced with security features, monitoring endpoints, and scalability considerations
+
+---
+# Ingress Resource: Routes external traffic to internal services
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: fraud-api-ingress
+  namespace: default
+  labels:
+    app: fraud-detection
+    component: api-gateway
+  annotations:
+    # NGINX Ingress Controller configuration
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # Creative security enhancements
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    nginx.ingress.kubernetes.io/rate-limit-window: "1m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "10m"
+    # Monitoring and observability
+    nginx.ingress.kubernetes.io/enable-cors: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://dashboard.snapp-fraud.local"
+spec:
+  # TLS configuration for secure communication
+  tls:
+  - hosts:
+    - api.snapp-fraud.local
+    - metrics.snapp-fraud.local
+    secretName: snapp-fraud-tls
+  rules:
+  # Main API endpoint
+  - host: api.snapp-fraud.local
+    http:
+      paths:
+      - path: /predict
+        pathType: Prefix
+        backend:
+          service:
+            name: fraud-inference-service
+            port:
+              number: 80
+      - path: /health
+        pathType: Prefix
+        backend:
+          service:
+            name: fraud-inference-service
+            port:
+              number: 80
+      - path: /ready
+        pathType: Prefix
+        backend:
+          service:
+            name: fraud-inference-service
+            port:
+              number: 80
+  # Metrics endpoint
+  - host: metrics.snapp-fraud.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: fraud-inference-service
+            port:
+              number: 80
+
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/cert-manager.io/certificate_v1.json
+# Certificate Resource: Automated TLS certificate management
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: snapp-fraud-tls
+  namespace: default
+  labels:
+    app: fraud-detection
+    component: certificates
+spec:
+  # Secret to store the certificate
+  secretName: snapp-fraud-tls
+  # Certificate issuer configuration
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  # DNS names covered by this certificate
+  dnsNames:
+  - api.snapp-fraud.local
+  - metrics.snapp-fraud.local
+  # Creative wildcard for future subdomains
+  - "*.snapp-fraud.local"

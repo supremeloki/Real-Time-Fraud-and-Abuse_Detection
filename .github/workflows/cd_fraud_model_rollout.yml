@@ -1,0 +1,56 @@
+name: CD Fraud Model Rollout
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-model:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+
+    - name: Install MLflow Client
+      run: pip install mlflow
+
+    - name: Download Latest Production Model
+      run: |
+        mlflow artifacts download --run-id ${{ secrets.MLFLOW_PROD_MODEL_RUN_ID }} --artifact-path model --dst-path ./model_artifacts
+      env:
+        MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_HUB_USERNAME }}
+        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+    - name: Build and Push Docker Image
+      uses: docker/build-push-action@v4
+      with:
+        context: .
+        file: ./deployment_ops/docker/Dockerfile.inference_service
+        push: true
+        tags: snapptech/fraud-inference:${{ github.sha }}
+
+    - name: Configure Kubernetes Context
+      uses: azure/k8s-set-context@v2
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG_PROD }}
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f deployment_ops/kubernetes/k8s_fraud_deployment.yaml
+        kubectl set image deployment/fraud-inference-service fraud-inference=snapptech/fraud-inference:${{ github.sha }}
+        kubectl rollout status deployment/fraud-inference-service --timeout=300s
+      continue-on-error: false
