@@ -1,0 +1,27 @@
+detection_thresholds:
+  lightgbm_fraud_score:
+    critical: 0.85
+    high: 0.75
+    medium: 0.60
+    low: 0.40
+  gnn_collusion_score:
+    critical: 0.90
+    high: 0.80
+    medium: 0.70
+    low: 0.50
+
+action_triggers:
+  auto_block_score: 0.95
+  manual_review_queue_score: 0.70
+  warning_to_user_score: 0.50
+
+feedback_loop:
+  positive_feedback_threshold_increase: 0.02
+  negative_feedback_threshold_decrease: 0.05
+  auto_recalibration_frequency_days: 7
+
+latency_budget_ms:
+  feature_extraction: 20
+  model_inference_lightgbm: 15
+  model_inference_gnn: 40
+  total_decision_time: 150

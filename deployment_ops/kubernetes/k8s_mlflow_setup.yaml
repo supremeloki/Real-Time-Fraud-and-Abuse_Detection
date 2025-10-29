@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow-server
+  labels:
+    app: mlflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow
+  template:
+    metadata:
+      labels:
+        app: mlflow
+    spec:
+      containers:
+      - name: mlflow-server
+        image: ghcr.io/mlflow/mlflow:v2.3.2 # Use a specific MLflow version
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MLFLOW_TRACKING_URI
+          value: "http://mlflow-server:5000" # Self-referencing
+        - name: MLFLOW_BACKEND_STORE_URI
+          value: "postgresql://mlflow_user:mlflow_password@mlflow-db-svc:5432/mlflow_db"
+        - name: MLFLOW_DEFAULT_ARTIFACT_ROOT
+          value: "s3://snapp-ml-models/mlflow-artifacts" # Use S3 for artifact storage
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: aws-s3-credentials
+              key: access_key_id
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: aws-s3-credentials
+              key: secret_access_key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow-server
+  labels:
+    app: mlflow
+spec:
+  ports:
+  - port: 5000
+    targetPort: 5000
+  selector:
+    app: mlflow
+  type: ClusterIP # Use NodePort or LoadBalancer for external access if needed
+---
+# PostgreSQL Database for MLflow Backend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mlflow-db
+  labels:
+    app: mlflow-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mlflow-db
+  template:
+    metadata:
+      labels:
+        app: mlflow-db
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:13-alpine
+        ports:
+        - containerPort: 5432
+        env:
+        - name: POSTGRES_DB
+          value: "mlflow_db"
+        - name: POSTGRES_USER
+          value: "mlflow_user"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mlflow-db-credentials
+              key: postgres_password
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "250m"
+        volumeMounts:
+        - name: postgres-persistent-storage
+          mountPath: /var/lib/postgresql/data
+      volumes:
+      - name: postgres-persistent-storage
+        persistentVolumeClaim:
+          claimName: mlflow-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mlflow-db-svc
+  labels:
+    app: mlflow-db
+spec:
+  ports:
+  - port: 5432
+    targetPort: 5432
+  selector:
+    app: mlflow-db
+  type: ClusterIP
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mlflow-db-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

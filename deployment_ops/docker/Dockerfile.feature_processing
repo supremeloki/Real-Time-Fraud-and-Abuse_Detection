@@ -1,0 +1,45 @@
+# Use a base image with Java and Python, suitable for Spark
+FROM openjdk:11-jre-slim-bullseye AS base
+
+# Install Python and other necessary packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    build-essential \
+    libgomp1 \
+    curl \
+    gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set Python 3 as default
+RUN ln -sf python3 /usr/bin/python
+
+# Setup working directory
+WORKDIR /app
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install Apache Spark (using a specific version for stability)
+ENV SPARK_VERSION=3.4.1
+ENV HADOOP_VERSION=3
+ENV SPARK_HOME=/spark
+RUN curl -sL "https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION.tgz" | tar -xz -C /tmp && \
+    mv /tmp/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION $SPARK_HOME && \
+    rm -rf /tmp/spark-$SPARK_VERSION-bin-hadoop$HADOOP_VERSION.tgz
+
+# Set environment variables for Spark
+ENV PATH="${PATH}:${SPARK_HOME}/bin"
+ENV PYTHONPATH="${SPARK_HOME}/python:$PYTHONPATH"
+ENV PYSPARK_PYTHON=python3
+
+# Copy application code, configurations, and data vaults
+COPY . .
+COPY config ./config
+COPY data_vault ./data_vault
+
+# Command to run the Spark-based feature processing job
+# This assumes a script like src/feature_forge/batch_features.py can be run as a Spark job
+# You might need to adjust this to use spark-submit if it's a complex Spark application
+CMD ["python3", "src/feature_forge/batch_features.py", "--env", "prod"]

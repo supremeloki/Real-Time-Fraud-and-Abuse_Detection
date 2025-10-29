@@ -1,0 +1,39 @@
+# Use a slim Python base image for smaller size and faster downloads
+FROM python:3.8-slim-bullseye AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy only requirements file first to leverage Docker cache
+COPY requirements.txt .
+
+# Install Python dependencies
+# Using --no-cache-dir for smaller image size
+# Using poetry or pip-tools for locked dependencies is recommended in production
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application code
+COPY . .
+
+# Ensure configurations are available in the final image
+# This might involve copying only the relevant environment config
+# For simplicity, copy the whole 'config' directory
+COPY config ./config
+
+# Copy data_vault (if needed for batch/graph features or explanation background data at inference)
+# In a real setup, these might be mounted volumes or pulled from S3 at runtime
+COPY data_vault ./data_vault
+
+# Expose the port FastAPI will run on
+EXPOSE 8000
+
+# Command to run the FastAPI application using Uvicorn
+# Use gunicorn with uvicorn workers for production-grade ASGI server
+# Adjust workers based on CPU cores. Example: --workers 4
+CMD ["gunicorn", "src.prediction_engine.fraud_detection_api:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]

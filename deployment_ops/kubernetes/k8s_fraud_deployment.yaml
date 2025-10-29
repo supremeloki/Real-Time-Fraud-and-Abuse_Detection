@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-inference-service
+  labels:
+    app: fraud-inference
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fraud-inference
+  template:
+    metadata:
+      labels:
+        app: fraud-inference
+    spec:
+      containers:
+      - name: fraud-inference
+        image: snapptech/fraud-inference:${{ github.sha }}
+        ports:
+        - containerPort: 8000
+        env:
+        - name: KAFKA_BROKERS
+          valueFrom:
+            configMapKeyRef:
+              name: fraud-config
+              key: kafka_brokers
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: fraud-config
+              key: redis_host
+        - name: MLFLOW_TRACKING_URI
+          valueFrom:
+            secretKeyRef:
+              name: mlflow-secrets
+              key: tracking_uri
+        - name: AWS_ACCESS_KEY_ID # For MLflow S3 access
+          valueFrom:
+            secretKeyRef:
+              name: aws-s3-credentials
+              key: access_key_id
+        - name: AWS_SECRET_ACCESS_KEY # For MLflow S3 access
+          valueFrom:
+            secretKeyRef:
+              name: aws-s3-credentials
+              key: secret_access_key
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fraud-inference-service
+  labels:
+    app: fraud-inference
+spec:
+  selector:
+    app: fraud-inference
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP

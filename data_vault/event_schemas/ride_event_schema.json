@@ -1,0 +1,127 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Snapp Ride Event Schema",
+  "description": "Schema for various ride-related events in Snapp's real-time data stream.",
+  "type": "object",
+  "required": [
+    "event_id",
+    "event_timestamp",
+    "event_type",
+    "user_id",
+    "device_info",
+    "ip_address"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "Unique identifier for the event."
+    },
+    "event_timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp of the event in ISO 8601 format (UTC)."
+    },
+    "event_type": {
+      "type": "string",
+      "description": "Type of the ride event.",
+      "enum": [
+        "ride_requested",
+        "ride_accepted",
+        "ride_started",
+        "ride_completed",
+        "ride_cancelled",
+        "payment_processed",
+        "driver_logged_in",
+        "driver_logged_out",
+        "user_logged_in",
+        "user_logged_out"
+      ]
+    },
+    "user_id": {
+      "type": "string",
+      "description": "Identifier for the user initiating the event."
+    },
+    "driver_id": {
+      "type": "string",
+      "description": "Identifier for the driver involved in the event.",
+      "nullable": true
+    },
+    "ride_id": {
+      "type": "string",
+      "description": "Unique identifier for the ride session.",
+      "nullable": true
+    },
+    "start_location_lat": {
+      "type": "number",
+      "format": "float",
+      "description": "Latitude of the ride start location.",
+      "nullable": true
+      },
+    "start_location_lon": {
+      "type": "number",
+      "format": "float",
+      "description": "Longitude of the ride start location.",
+      "nullable": true
+    },
+    "end_location_lat": {
+      "type": "number",
+      "format": "float",
+      "description": "Latitude of the ride end location.",
+      "nullable": true
+    },
+    "end_location_lon": {
+      "type": "number",
+      "format": "float",
+      "description": "Longitude of the ride end location.",
+      "nullable": true
+    },
+    "fare_amount": {
+      "type": "number",
+      "format": "float",
+      "description": "Total fare for the ride in IRR.",
+      "nullable": true
+    },
+    "distance_km": {
+      "type": "number",
+      "format": "float",
+      "description": "Distance of the ride in kilometers.",
+      "nullable": true
+    },
+    "duration_min": {
+      "type": "number",
+      "format": "float",
+      "description": "Duration of the ride in minutes.",
+      "nullable": true
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method used (e.g., cash, credit_card, wallet).",
+      "nullable": true
+    },
+    "promo_code_used": {
+      "type": "string",
+      "description": "Promo code applied to the ride, if any.",
+      "nullable": true
+    },
+    "device_info": {
+      "type": "string",
+      "description": "Information about the device (e.g., OS, model)."
+    },
+    "ip_address": {
+      "type": "string",
+      "format": "ipv4",
+      "description": "IP address of the device."
+    },
+    "app_version": {
+      "type": "string",
+      "description": "Version of the Snapp app.",
+      "nullable": true
+    },
+    "user_agent": {
+      "type": "string",
+      "description": "User agent string of the device.",
+      "nullable": true
+    }
+  },
+  "additionalProperties": false
+}
