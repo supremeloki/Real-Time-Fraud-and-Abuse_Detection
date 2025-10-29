@@ -8,7 +8,7 @@ on:
 jobs:
   deploy-model:
     runs-on: ubuntu-latest
-    environment: production
+    if: false  # Disable this workflow for now since it requires secrets and infrastructure
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3

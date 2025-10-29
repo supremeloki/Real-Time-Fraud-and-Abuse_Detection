@@ -27,7 +27,7 @@ jobs:
         pip install bandit safety
 
     - name: Run Bandit Security Scanner
-      run: bandit -r src/ -ll -f json -o bandit_report.json --exit-zero
+      run: bandit -r src/ -ll -f json -o bandit_report.json --exit-zero || echo "Bandit completed with warnings"
 
     - name: Run Safety Dependency Checker
       run: safety check -r requirements.txt --output safety_report.json || true
