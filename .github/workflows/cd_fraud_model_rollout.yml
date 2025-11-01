@@ -24,9 +24,15 @@ jobs:
       id: get_run_id
       run: |
         RUN_ID=$(mlflow runs list --experiment-name "fraud_detection" --limit 1 --order-by "start_time DESC" | awk 'NR==2 {print $1}')
-        echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        if [ -z "$RUN_ID" ] || [ "$RUN_ID" = "" ]; then
+          echo "No runs found in fraud_detection experiment. Skipping deployment."
+          echo "run_id=skip" >> $GITHUB_OUTPUT
+        else
+          echo "run_id=$RUN_ID" >> $GITHUB_OUTPUT
+        fi
 
     - name: Download Latest Production Model
+      if: steps.get_run_id.outputs.run_id != 'skip'
       run: |
         mlflow artifacts download --run-id ${{ steps.get_run_id.outputs.run_id }} --dst-path ./model_artifacts
       env:
