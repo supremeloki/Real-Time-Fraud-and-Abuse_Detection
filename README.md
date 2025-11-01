@@ -9,35 +9,35 @@
 
 ## 📋 Table of Contents
 
-1.  [🎯 Introduction](#1-introduction)
-2.  [✨ Key Features](#2-key-features)
-3.  [🏗️ System Architecture Overview](#3-system-architecture-overview)
-4.  [🛠️ Technology Stack](#4-technology-stack)
-5.  [🚀 Getting Started](#5-getting-started)
+1.  [🎯 Introduction](#-introduction)
+2.  [✨ Key Features](#-key-features)
+3.  [🏗️ System Architecture Overview](#-system-architecture-overview)
+4.  [🛠️ Technology Stack](#-technology-stack)
+5.  [🚀 Getting Started](#-getting-started)
     *   [📋 Prerequisites](#prerequisites)
     *   [⬇️ Installation](#installation)
     *   [⚙️ Configuration](#configuration)
     *   [💻 Local Development Setup](#local-development-setup)
     *   [☸️ Kubernetes Deployment](#kubernetes-deployment)
-6.  [📁 Directory Structure Explained](#6-directory-structure-explained)
-7.  [🎮 Usage and Demos](#7-usage-and-demos)
-8.  [🤖 MLOps Strategy](#8-mlops-strategy)
-9.  [🛡️ Ethics and Privacy](#9-ethics-and-privacy)
-10. [🤝 Contributing](#10-contributing)
-11. [📄 License](#11-license)
-12. [📞 Contact](#12-contact)
+6.  [📁 Directory Structure Explained](#-directory-structure-explained)
+7.  [🎮 Usage and Demos](#-usage-and-demos)
+8.  [🤖 MLOps Strategy](#-mlops-strategy)
+9.  [🛡️ Ethics and Privacy](#-ethics-and-privacy)
+10. [🤝 Contributing](#-contributing)
+11. [📄 License](#-license)
+12. [📞 Contact](#-contact)
 
 ## 🎯 1. Introduction
 
-Welcome to **SnappTech Fraud & Abuse Detection** - a cutting-edge, enterprise-grade MLOps-driven system designed for real-time and batch detection of fraudulent activities and various forms of abuse across digital platforms! 🚀
+🎉 Welcome to **SnappTech Fraud & Abuse Detection** - a cutting-edge, enterprise-grade MLOps-driven system designed for real-time and batch detection of fraudulent activities and various forms of abuse across digital platforms! 🚀
 
-This comprehensive solution leverages advanced machine learning models, graph analytics, and robust data pipelines to minimize financial losses, protect users, and maintain service integrity.
+💡 This comprehensive solution leverages advanced machine learning models, graph analytics, and robust data pipelines to minimize financial losses, protect users, and maintain service integrity.
 
-Built with **scalability**, **explainability**, and **continuous improvement** in mind, integrating state-of-the-art tools and practices for data ingestion, feature engineering, model training, deployment, monitoring, and automated remediation.
+🏗️ Built with **scalability**, **explainability**, and **continuous improvement** in mind, integrating state-of-the-art tools and practices for data ingestion, feature engineering, model training, deployment, monitoring, and automated remediation.
 
 ## ✨ 2. Key Features
 
-The system is engineered with a rich set of capabilities to tackle complex fraud and abuse scenarios:
+🔥 The system is engineered with a rich set of capabilities to tackle complex fraud and abuse scenarios:
 
 ### 🔍 Detection Capabilities
 *   **⚡ Real-time & Batch Fraud Detection:** Instant transaction processing + deep periodic analysis
@@ -63,7 +63,7 @@ The system is engineered with a rich set of capabilities to tackle complex fraud
 
 ## 🏗️ 3. System Architecture Overview
 
-The system follows a **microservices-oriented architecture** deployed on Kubernetes, designed for high availability, scalability, and modularity.
+🏛️ The system follows a **microservices-oriented architecture** deployed on Kubernetes, designed for high availability, scalability, and modularity.
 
 ### 🔄 Core Components
 *   **📨 Ingestion Stream:** Receives raw events via Kafka (`ride_event_schema.json`)
@@ -95,14 +95,14 @@ The system follows a **microservices-oriented architecture** deployed on Kuberne
 
 ## 🚀 5. Getting Started
 
-Get the SnappTech Fraud Detection system up and running in minutes! ⚡
+⚡ Get the SnappTech Fraud Detection system up and running in minutes! Let's get you started! 🚀
 
 ### 📋 Prerequisites
-*   **🐍 Python 3.8+**
-*   **🐳 Docker** (containerization)
-*   **☸️ kubectl** (Kubernetes CLI)
-*   **☸️ Kubernetes cluster** (Minikube/kind or cloud-managed)
-*   **⚓ Helm** (infrastructure deployment)
+*   **🐍 Python 3.8+** - The core language powering our ML pipelines
+*   **🐳 Docker** - For containerization and isolated environments
+*   **☸️ kubectl** - Kubernetes CLI for cluster management
+*   **☸️ Kubernetes cluster** - Minikube/kind for local dev or cloud-managed for production
+*   **⚓ Helm** - For infrastructure deployment and package management
 
 ### ⬇️ Installation
 1.  **📥 Clone the repository:**
@@ -114,6 +114,7 @@ Get the SnappTech Fraud Detection system up and running in minutes! ⚡
     ```bash
     pip install -r requirements.txt
     ```
+    > 💡 **Pro tip:** Use a virtual environment to keep dependencies isolated!
 
 ### Configuration
 

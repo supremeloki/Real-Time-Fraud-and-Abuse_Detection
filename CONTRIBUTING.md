@@ -1,66 +1,65 @@
-# Contributing to SnappTech Fraud Detection System
+# 🤝 Contributing to SnappTech Fraud Detection System
 
-Thank you for your interest in contributing to the SnappTech Fraud Detection System! We welcome contributions from the community to help improve this advanced MLOps-driven fraud detection platform.
+🎉 Thank you for your interest in contributing to the SnappTech Fraud Detection System! We welcome contributions from the community to help improve this advanced MLOps-driven fraud detection platform. 🚀
 
-## Table of Contents
-1. [Getting Started](#getting-started)
-2. [Development Setup](#development-setup)
-3. [Contributing Guidelines](#contributing-guidelines)
-4. [Code Standards](#code-standards)
-5. [Testing](#testing)
-6. [Pull Request Process](#pull-request-process)
-7. [Issue Reporting](#issue-reporting)
-8. [Code of Conduct](#code-of-conduct)
+## 📋 Table of Contents
+1. [🚀 Getting Started](#getting-started)
+2. [⚙️ Development Setup](#development-setup)
+3. [📝 Contributing Guidelines](#contributing-guidelines)
+4. [🎯 Code Standards](#code-standards)
+5. [🧪 Testing](#testing)
+6. [🔄 Pull Request Process](#pull-request-process)
+7. [🐛 Issue Reporting](#issue-reporting)
+8. [🤝 Code of Conduct](#code-of-conduct)
 
-## Getting Started
+## 🚀 Getting Started
 
-### Prerequisites
-- Python 3.8+
-- Docker and Docker Compose
-- Git
-- kubectl (for Kubernetes deployment testing)
-- Helm (for infrastructure deployment)
+### 📋 Prerequisites
+- **🐍 Python 3.8+** - Our core development language
+- **🐳 Docker and Docker Compose** - For containerized development and testing
+- **📚 Git** - Version control system
+- **☸️ kubectl** - For Kubernetes deployment testing
+- **⚓ Helm** - For infrastructure deployment
 
-### Clone the Repository
+### 📥 Clone the Repository
 ```bash
-git clone https://github.com/your-org/snapptech-fraud-detection.git
-cd snapptech-fraud-detection
+git clone https://github.com/supremeloki/Real-Time-Fraud-and-Abuse_Detection.git
+cd Real-Time-Fraud-and-Abuse_Detection
 ```
 
-## Development Setup
+## ⚙️ Development Setup
 
-### 1. Install Dependencies
+### 1. 📦 Install Dependencies
 ```bash
 pip install -r requirements.txt
-pip install -r requirements-dev.txt  # For development tools
 ```
 
-### 2. Set Up Pre-commit Hooks
+### 2. 🔧 Set Up Pre-commit Hooks
 ```bash
 pip install pre-commit
 pre-commit install
 ```
 
-### 3. Run Tests
+### 3. 🧪 Run Tests
 ```bash
 pytest tests/ --cov=src --cov-report=html
 ```
 
-### 4. Code Formatting
+### 4. 🎨 Code Formatting
 ```bash
 black src tests
 flake8 src tests
 ```
 
-## Contributing Guidelines
+## 📝 Contributing Guidelines
 
-### Branch Naming
-- `feature/feature-name`: For new features
-- `bugfix/bug-description`: For bug fixes
-- `hotfix/critical-fix`: For critical fixes
-- `docs/documentation-update`: For documentation changes
+### 🌿 Branch Naming
+- `feature/feature-name`: For new features ✨
+- `bugfix/bug-description`: For bug fixes 🐛
+- `hotfix/critical-fix`: For critical fixes 🚨
+- `docs/documentation-update`: For documentation changes 📚
 
-### Commit Messages
+### 📝 Commit Messages
 Follow conventional commit format:
 ```
 type(scope): description
@@ -70,14 +69,14 @@ type(scope): description
 [optional footer]
 ```
 
-Types:
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation
-- `style`: Code style changes
-- `refactor`: Code refactoring
-- `test`: Testing
-- `chore`: Maintenance
+📋 **Types:**
+- `feat`: New feature ✨
+- `fix`: Bug fix 🐛
+- `docs`: Documentation 📚
+- `style`: Code style changes 🎨
+- `refactor`: Code refactoring 🔄
+- `test`: Testing 🧪
+- `chore`: Maintenance ⚙️
 
 ## Code Standards
 
