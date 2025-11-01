@@ -3,3 +3,4 @@
 2025-10-30T22:04:47 initial package layout
 2025-10-31T21:14:27 extract result type
 2025-10-31T23:53:35 harden validation paths
+2025-11-01T14:11:33 add dataclass contracts

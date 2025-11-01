@@ -26,3 +26,8 @@ from src.feature_forge.realtime_feature_engineer import (
 from src.graph_processor.node_embedding_updater import (
     NodeEmbeddingUpdater,
 )  # For GNN embeddings
+
+logger = logging.getLogger(__name__)
+
+
+class FeatureStoreClient:
