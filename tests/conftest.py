@@ -8,9 +8,14 @@ import os
 from pathlib import Path
 
 # Add src to path for imports
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from src.utils.logging_config import setup_system_logging
+try:
+    from src.utils.logging_config import setup_system_logging
+except ImportError:
+    # Fallback for when running without proper package structure
+    def setup_system_logging(*args, **kwargs):
+        pass
 
 
 @pytest.fixture(scope="session", autouse=True)

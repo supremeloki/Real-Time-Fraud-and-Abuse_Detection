@@ -1,1 +1,46 @@
 2025-10-28 23:54:28 - fraud_detection - INFO - setup_logging:126 - Logging configured with level INFO, file logging: True
+2025-10-29 09:31:22 - fraud_detection - INFO - setup_logging:123 - Logging configured with level INFO, file logging: True
+2025-10-29 09:31:23 - fraud_detection - INFO - setup_logging:123 - Logging configured with level WARNING, file logging: False
+2025-10-29 09:35:13 - fraud_detection - INFO - setup_logging:123 - Logging configured with level INFO, file logging: True
+2025-10-29 09:35:16 - fraud_detection - INFO - setup_logging:123 - Logging configured with level WARNING, file logging: False
+2025-10-29 09:35:16 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:35:16 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:36:17 - fraud_detection - INFO - setup_logging:123 - Logging configured with level INFO, file logging: True
+2025-10-29 09:36:19 - fraud_detection - INFO - setup_logging:123 - Logging configured with level WARNING, file logging: False
+2025-10-29 09:36:19 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:36:19 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:36:19 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:36:19 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:37:00 - fraud_detection - INFO - setup_logging:123 - Logging configured with level INFO, file logging: True
+2025-10-29 09:37:03 - fraud_detection - INFO - setup_logging:123 - Logging configured with level WARNING, file logging: False
+2025-10-29 09:37:03 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:37:03 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:37:03 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:37:03 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:37:03 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:37:03 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:37:03 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:37:03 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:37:03 - fraud_detection - INFO - setup_logging:123 - Logging configured with level DEBUG, file logging: False
+2025-10-29 09:38:38 - fraud_detection - INFO - setup_logging:123 - Logging configured with level INFO, file logging: True
+2025-10-29 09:38:39 - fraud_detection - INFO - setup_logging:123 - Logging configured with level WARNING, file logging: False
+2025-10-29 09:38:39 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:38:39 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:38:39 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:38:39 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:38:40 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:38:40 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:38:40 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:38:40 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:38:40 - fraud_detection - INFO - setup_logging:123 - Logging configured with level DEBUG, file logging: False
+2025-10-29 09:40:31 - fraud_detection - INFO - setup_logging:123 - Logging configured with level INFO, file logging: True
+2025-10-29 09:40:35 - fraud_detection - INFO - setup_logging:123 - Logging configured with level WARNING, file logging: False
+2025-10-29 09:40:35 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:40:35 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:40:35 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:40:35 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:40:35 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:40:35 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:40:35 - src.data_access.redis_cache_manager - INFO - __init__:31 - RedisCacheManager initialized for localhost:6379/0.
+2025-10-29 09:40:35 - src.correlation_engine.cross_channel_correlation_analyzer - INFO - __init__:37 - CrossChannelCorrelationAnalyzer initialized with window: 30min.
+2025-10-29 09:40:35 - fraud_detection - INFO - setup_logging:123 - Logging configured with level DEBUG, file logging: False

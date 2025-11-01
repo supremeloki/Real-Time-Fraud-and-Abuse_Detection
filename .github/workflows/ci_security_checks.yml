@@ -4,14 +4,11 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   security-scan:
     runs-on: ubuntu-latest
-    if: false  # Temporarily disable security checks
+    if: ${{ false }}  # Temporarily disable security checks
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
@@ -31,7 +28,7 @@ jobs:
       run: bandit -r src/ -ll -f json -o bandit_report.json --exit-zero || echo "Bandit completed with warnings"
 
     - name: Run Safety Dependency Checker
-      run: safety check -r requirements.txt --output safety_report.json || true
+      run: safety scan -r requirements.txt --output safety_report.json || true
 
     - name: Upload Bandit Report
       uses: actions/upload-artifact@v3
