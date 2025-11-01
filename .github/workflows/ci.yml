@@ -69,7 +69,7 @@ jobs:
                   if file.endswith(('.yaml','.yml')):
                       try:
                           with open(os.path.join(root,file),'r') as f:
-                              yaml.safe_load(f)
+                              yaml.safe_load_all(f)
                       except yaml.YAMLError as e:
                           print(f'YAML error in {os.path.join(root,file)}: {e}')
                           exit(1)
