@@ -6,6 +6,7 @@ from typing import Dict, Any, List, Tuple
 from collections import defaultdict
 import sys
 from pathlib import Path
+from dateutil import parser
 
 import json
 
@@ -46,18 +47,18 @@ class CrossChannelCorrelationAnalyzer:
         self.entity_event_stream[entity_id] = [
             event
             for event in self.entity_event_stream[entity_id]
-            if datetime.fromisoformat(event["event_timestamp"]) >= cutoff_time
+            if parser.isoparse(event["event_timestamp"]) >= cutoff_time
         ]
         # Keep history size bounded
         if len(self.entity_event_stream[entity_id]) > self.max_event_history:
             self.entity_event_stream[entity_id] = sorted(
                 self.entity_event_stream[entity_id],
-                key=lambda x: datetime.fromisoformat(x["event_timestamp"]),
+                key=lambda x: parser.isoparse(x["event_timestamp"]),
             )[len(self.entity_event_stream[entity_id]) - self.max_event_history :]
 
     def analyze_event(self, event: Dict[str, Any]) -> Dict[str, Any]:
         analysis_results = {}
-        event_timestamp = datetime.fromisoformat(event["event_timestamp"])
+        event_timestamp = parser.isoparse(event["event_timestamp"])
 
         user_id = event.get("user_id")
         driver_id = event.get("driver_id")
@@ -105,7 +106,7 @@ class CrossChannelCorrelationAnalyzer:
         window_events = [
             e
             for e in events
-            if datetime.fromisoformat(e["event_timestamp"])
+            if parser.isoparse(e["event_timestamp"])
             >= (current_time - timedelta(minutes=self.correlation_window_minutes))
         ]
 
@@ -122,7 +123,7 @@ class CrossChannelCorrelationAnalyzer:
 
         # Rapid sequence of actions (e.g., login -> profile update -> ride request -> cancellation)
         sorted_events = sorted(
-            window_events, key=lambda x: datetime.fromisoformat(x["event_timestamp"])
+            window_events, key=lambda x: parser.isoparse(x["event_timestamp"])
         )
 
         # Check for rapid login attempts from different IPs (requires IP in event history)
@@ -155,7 +156,7 @@ class CrossChannelCorrelationAnalyzer:
         window_events = [
             e
             for e in events
-            if datetime.fromisoformat(e["event_timestamp"])
+            if parser.isoparse(e["event_timestamp"])
             >= (current_time - timedelta(minutes=self.correlation_window_minutes))
         ]
 
@@ -192,13 +193,13 @@ class CrossChannelCorrelationAnalyzer:
         user_events = [
             e
             for e in self.entity_event_stream[user_id]
-            if datetime.fromisoformat(e["event_timestamp"])
+            if parser.isoparse(e["event_timestamp"])
             >= (current_time - timedelta(minutes=self.correlation_window_minutes))
         ]
         driver_events = [
             e
             for e in self.entity_event_stream[driver_id]
-            if datetime.fromisoformat(e["event_timestamp"])
+            if parser.isoparse(e["event_timestamp"])
             >= (current_time - timedelta(minutes=self.correlation_window_minutes))
         ]
 
