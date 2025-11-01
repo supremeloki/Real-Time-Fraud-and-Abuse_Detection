@@ -1,0 +1,17 @@
+[flake8]
+max-line-length = 88
+extend-ignore =
+    E203,  # ناسازگار با Black (spacing around :)
+    W503,  # line break before binary operator
+    E501,  # طول خطوط طولانی را نادیده بگیر
+    F401,  # importهای استفاده‌نشده را فعلاً نادیده بگیر
+    F841,  # متغیرهای استفاده‌نشده را فعلاً نادیده بگیر
+    F541,  # f-string بدون placeholder
+    E741   # نام متغیر مبهم
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    venv,
+    .venv
