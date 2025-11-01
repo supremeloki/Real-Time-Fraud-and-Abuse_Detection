@@ -23,7 +23,7 @@ jobs:
 
     - name: Download Latest Production Model
       run: |
-        mlflow artifacts download --run-id ${{ secrets.MLFLOW_PROD_MODEL_RUN_ID }} --artifact-path model --dst-path ./model_artifacts
+        mlflow artifacts download --run-id ${{ secrets.MLFLOW_PROD_MODEL_RUN_ID }} --artifact-path model --dst-path ./model_artifacts --tracking-uri ${{ secrets.MLFLOW_TRACKING_URI }}
       env:
         MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
