@@ -16,10 +16,10 @@ class TestCrossChannelCorrelationAnalyzer:
     def analyzer(self):
         """Create analyzer instance for testing."""
         redis_config = {
-            'redis_host': 'localhost',
-            'redis_port': 6379,
-            'redis_db': 0,
-            'default_ttl_seconds': 3600
+            "redis_host": "localhost",
+            "redis_port": 6379,
+            "redis_db": 0,
+            "default_ttl_seconds": 3600,
         }
         return CrossChannelCorrelationAnalyzer(redis_config)
 
