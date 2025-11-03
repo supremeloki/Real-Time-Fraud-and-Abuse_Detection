@@ -8,3 +8,4 @@
 2025-11-02T10:36:12 introduce typed error hierarchy
 2025-11-02T21:03:08 implement core engine
 2025-11-03T11:46:04 wire internal state machine
+2025-11-03T19:37:36 handle empty input edge case
