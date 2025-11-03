@@ -25,3 +25,6 @@ class DataDriftDetector:
         self.data_lake_client = DataLakeClient(config["data_lake_config"])
         self.reference_data_path = config["data_drift_config"]["reference_data_path"]
         self.current_data_log_path = config["data_drift_config"][
+            "current_data_log_path"
+        ]
+        self.monitoring_interval_hours = config["data_drift_config"][
