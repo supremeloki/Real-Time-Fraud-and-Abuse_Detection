@@ -24,3 +24,5 @@ class DataQualityChecker:
             if val is None:
                 continue
 
+            expType = fldRules.get("type")
+            if expType:
