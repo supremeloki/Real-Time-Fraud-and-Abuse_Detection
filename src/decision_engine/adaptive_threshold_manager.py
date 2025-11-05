@@ -29,3 +29,5 @@ class AdaptiveThresholdManager:
 
     def __init__(
         self,
+        redis_config: Dict[str, Any],
+        initial_thresholds: Dict[str, float],
