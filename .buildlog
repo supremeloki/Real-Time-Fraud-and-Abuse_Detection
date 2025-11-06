@@ -14,3 +14,4 @@
 2025-11-04T19:00:36 refactor module boundaries pt2
 2025-11-05T10:57:59 implement core engine pt2
 2025-11-05T21:17:00 introduce typed error hierarchy pt2
+2025-11-06T18:54:42 extract result type pt2

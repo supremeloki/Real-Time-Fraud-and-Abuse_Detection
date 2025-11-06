@@ -110,3 +110,10 @@ class DecisionOrchestrator:
         try:
             # Threat intelligence features
             threat_intel_features = self.threat_intel.check_event_for_threats(raw_event)
+
+            # User behavioral profile updates and features
+            self.behavioral_profiler.update_user_profile(raw_event)
+            behavioral_features = self.behavioral_profiler.get_user_behavioral_features(
+                raw_event.get("user_id"), current_timestamp
+            )
+
