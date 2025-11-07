@@ -114,3 +114,10 @@ class RemediationOrchestrator:
 
         elif action_type == "flag_for_review":
             entity_id = (
+                event_context.get("user_id")
+                or event_context.get("driver_id")
+                or event_context.get("event_id")
+            )
+            if entity_id:
+                review_key = f"review:entity:{entity_id}"
+                review_data = {
