@@ -32,6 +32,7 @@ jobs:
         fi
 
     - name: Download Latest Production Model
+      if: steps.get_run_id.outputs.run_id != 'skip'
       env:
         MLFLOW_PROD_MODEL_RUN_ID: ${{ secrets.MLFLOW_PROD_MODEL_RUN_ID }}
         MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
