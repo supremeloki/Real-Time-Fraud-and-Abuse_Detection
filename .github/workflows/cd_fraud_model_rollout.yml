@@ -38,14 +38,14 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       run: |
-        🎭 Fraud Model Conjurer: Checking the mystical MLflow runes... 🎭
+        echo "Checking MLflow production model run ID..."
         if [ -z "${MLFLOW_PROD_MODEL_RUN_ID}" ]; then
-          echo "🧙‍♂️ No production model run ID found! The ancient artifact remains hidden. Skipping download. ✨"
+          echo "MLFLOW_PROD_MODEL_RUN_ID not set — skipping model download"
           exit 0
         fi
-        echo "🔮 Summoning the latest model from the MLflow ether... 🔮"
+        echo "Downloading model artifacts..."
         mlflow artifacts download --run-id "${MLFLOW_PROD_MODEL_RUN_ID}" --artifact-path model --dst-path ./model_artifacts
-        echo "✨ Model successfully materialized! Ready for deployment to the digital realm. ✨"
+        echo "Model download completed successfully"
 
     - name: Log in to Docker Hub
       if: steps.get_run_id.outputs.run_id != 'skip'
