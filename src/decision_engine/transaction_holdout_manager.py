@@ -65,3 +65,7 @@ class TransactionHoldoutManager:
         :param event: The raw incoming event.
         :param current_model_decision: The prediction and suggested action from the fraud model.
         :return: A tuple (is_holdout, holdout_reason)
+        """
+        if not self.enabled:
+            return False, None
+
