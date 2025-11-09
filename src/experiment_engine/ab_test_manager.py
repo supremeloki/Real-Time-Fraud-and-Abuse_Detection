@@ -57,3 +57,5 @@ class ABTestManager:
 
         # Ensure sum of weights is 1 for variants, re-normalize if needed
         sum_weights = sum(variant_weights.values())
+        if sum_weights == 0:
+            logger.error(
