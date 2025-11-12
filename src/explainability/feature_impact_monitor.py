@@ -125,3 +125,8 @@ class FeatureImpactMonitor:
             logger.error(
                 f"Error fetching feature importances from MLflow: {e}", exc_info=True
             )
+            return None
+
+    def monitor_feature_impact(self) -> bool:
+        """
+        Compares current feature importances with previous ones and logs/alerts on significant changes.
