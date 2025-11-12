@@ -22,3 +22,4 @@
 2025-11-09T10:04:05 introduce typed error hierarchy pt2
 2025-11-09T17:32:29 wire internal state machine pt2
 2025-11-11T11:16:30 handle empty input edge case pt2
+2025-11-12T12:24:19 extend public api surface
