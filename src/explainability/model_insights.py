@@ -36,3 +36,4 @@ class ModelInsights:
             shapVals = shapVals[1]
         explanation = {
             feature: float(shapVals[0, i]) for i, feature in enumerate(self.featNames)
+        }
