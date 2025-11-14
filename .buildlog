@@ -28,3 +28,4 @@
 2025-11-13T20:53:36 add streaming path
 2025-11-14T20:13:43 add cli entrypoint
 2025-11-14T23:16:44 support multiple sources
+2025-11-14T23:17:40 expose metrics hooks
