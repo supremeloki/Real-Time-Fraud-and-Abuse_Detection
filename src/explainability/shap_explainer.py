@@ -54,3 +54,5 @@ class SHAPExplainer:
         if isinstance(shap_values, list):
             shap_values = shap_values[1]  # SHAP values for class 1 (fraud)
 
+        explanation_dict = {
+            feature: float(shap_values[0, i])
