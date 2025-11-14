@@ -26,3 +26,4 @@
 2025-11-12T21:44:36 implement cache layer
 2025-11-13T20:01:22 support config overrides
 2025-11-13T20:53:36 add streaming path
+2025-11-14T20:13:43 add cli entrypoint
