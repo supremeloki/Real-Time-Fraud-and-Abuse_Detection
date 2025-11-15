@@ -54,3 +54,4 @@ class BatchFeatureProcessor:
                     "event_type",
                     lambda x: (
                         (x == "ride_cancelled").sum() / x.count()
+                        if x.count() > 0
