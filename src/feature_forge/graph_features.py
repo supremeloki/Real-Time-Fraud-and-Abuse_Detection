@@ -75,3 +75,5 @@ class GraphFeatureExtractor:
                     for node in G.nodes()
                 ]
             )
+            self.logger.info("Centrality features computed.")
+            return centrality_df
