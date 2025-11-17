@@ -129,3 +129,7 @@ class RealTimeFeatureStore:
                 f"{driver_key}:rides_completed_medium_window",
                 self.time_window_seconds_medium,
             )
+            pipeline.expire(
+                f"{driver_key}:rides_completed_long_window",
+                self.time_window_seconds_long,
+            )
