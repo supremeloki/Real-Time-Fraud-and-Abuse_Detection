@@ -85,3 +85,6 @@ class HumanReviewSystem:
 
         self._update_review_status(event_id, "reviewed", reviewer_id)
 
+    def _update_review_status(self, event_id: str, new_status: str, reviewer_id: str):
+        # This is a simplified in-place update for demo. In production, this would involve a database.
+        # For JSONL, this means rewriting the file or marking entry as superseded.
