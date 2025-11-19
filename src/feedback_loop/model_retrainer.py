@@ -75,3 +75,5 @@ class ModelRetrainer:
             )
             return None
 
+        logger.info(f"Prepared {len(training_df)} samples for retraining.")
+        return training_df
