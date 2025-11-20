@@ -222,3 +222,8 @@ class GraphAnomalyDetector:
         self, new_metrics: Dict[str, Dict[str, float]]
     ):
         """
+        Periodically updates the historical mean and std dev for centrality measures
+        based on the current graph state. This would typically be a scheduled batch job.
+        """
+        # This function would be called by a separate batch process after a period
+        # to update the `historical_centrality` in Redis.
