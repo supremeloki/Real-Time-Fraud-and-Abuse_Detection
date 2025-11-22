@@ -55,3 +55,5 @@ class NodeEmbeddingUpdater:
                 (0, self.embedding_dimension - len(feature_vector)),
                 "constant",
             )
+        elif len(feature_vector) > self.embedding_dimension:
+            feature_vector = feature_vector[: self.embedding_dimension]
