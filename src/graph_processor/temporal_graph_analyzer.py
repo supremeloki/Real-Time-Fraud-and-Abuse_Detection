@@ -215,3 +215,7 @@ class TemporalGraphAnalyzer:
             node_temporal_features[f"{prefix}_avg_event_interval_min"] = 0.0
             node_temporal_features[f"{prefix}_min_event_interval_min"] = 0.0
 
+        # Change in average fare/distance over time (trend)
+        if len(events_df) > 5:  # Need enough data for a trend
+            # Calculate simple linear trend of fare_amount over event_timestamp
+            try:
