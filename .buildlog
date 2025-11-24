@@ -46,3 +46,4 @@
 2025-11-23T20:21:46 test grouping edge cases
 2025-11-23T20:48:47 fix flaky ordering in tests
 2025-11-24T10:11:55 guard against missing header row
+2025-11-24T14:13:49 expand unit coverage
