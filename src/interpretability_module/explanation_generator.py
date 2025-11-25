@@ -138,3 +138,5 @@ if __name__ == "__main__":
         "--env", type=str, default="dev", help="Environment (dev or prod)"
     )
     args = parser.parse_args()
+
+    current_dir = Path(__file__).parent
