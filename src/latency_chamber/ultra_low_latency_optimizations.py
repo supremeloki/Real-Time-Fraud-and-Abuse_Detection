@@ -65,3 +65,4 @@ class LatencyOptimizer:
         budget = self.latency_budgets.get(component_name)
         if budget is not None and actual_latency_ms > budget:
             logger.warning(
+                f"Latency breach for {component_name}: Actual {actual_latency_ms:.2f}ms > Budget {budget}ms"
