@@ -19,11 +19,3 @@ class BaseModel(ABC):
     @abstractmethod
     def load(self, model_path: str):
         pass
-
-    @abstractmethod
-    def save(self, model_path: str):
-        pass
-
-    @abstractmethod
-    def get_feature_names(self) -> list:
-        pass
