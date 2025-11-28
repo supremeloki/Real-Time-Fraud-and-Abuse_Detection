@@ -168,3 +168,6 @@ class GNNTrainer:
                 optimizer.step()
 
                 model.eval()
+                val_out = model(data.x, data.edge_index)
+                val_loss = criterion(val_out[val_mask], data.y[val_mask])
+

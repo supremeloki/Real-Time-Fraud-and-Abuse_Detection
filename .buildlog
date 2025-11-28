@@ -53,3 +53,4 @@
 2025-11-26T21:17:06 fix off-by-one in chunker
 2025-11-27T19:11:41 fix off-by-one in chunker pt2
 2025-11-27T21:14:54 test grouping edge cases pt2
+2025-11-28T21:43:36 guard against missing header row pt2
