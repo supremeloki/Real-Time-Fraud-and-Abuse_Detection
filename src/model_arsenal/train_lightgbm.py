@@ -153,3 +153,6 @@ class LightGBMTrainer:
             pr_precision, pr_recall, _ = precision_recall_curve(y_val, probabilities)
             pr_auc = auc(pr_recall, pr_precision)
 
+            mlflow.log_metrics(
+                {
+                    "auc_score": auc_score,
