@@ -58,3 +58,4 @@
 2025-11-29T20:00:04 guard against missing header row pt2
 2025-11-29T21:53:59 test streaming backpressure pt2
 2025-11-30T12:45:38 fix flaky ordering in tests pt2
+2025-11-30T17:57:31 fix off-by-one in chunker pt2
