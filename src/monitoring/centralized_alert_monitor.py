@@ -143,3 +143,6 @@ if __name__ == "__main__":
         print(f"[{alert['severity'].upper()}] {alert['source']}: {alert['message']}")
 
     print("\n--- Clearing an Alert ---")
+    # Clear the first critical alert logged (GraphAnomalyDetector)
+    alert_to_clear_time = monitor.alert_log[0]["timestamp"]
+    alert_to_clear_source = monitor.alert_log[0]["source"]
