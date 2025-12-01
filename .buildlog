@@ -59,3 +59,4 @@
 2025-11-29T21:53:59 test streaming backpressure pt2
 2025-11-30T12:45:38 fix flaky ordering in tests pt2
 2025-11-30T17:57:31 fix off-by-one in chunker pt2
+2025-12-01T12:40:32 regression test for parser pt2

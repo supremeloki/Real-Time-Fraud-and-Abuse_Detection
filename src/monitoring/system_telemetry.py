@@ -89,19 +89,3 @@ if __name__ == "__main__":
         if i % 7 == 0:
             telemetry.addError("ModelFail", {"mdlId": "v2"})
         if i % 13 == 0:
-            telemetry.addError("DbError")
-        telemetry.incThroughput()
-        time.sleep(0.1)
-
-    metrics1 = telemetry.getAggregated()
-    print(json.dumps(metrics1, indent=2))
-
-    time.sleep(65)
-
-    for i in range(5):
-        telemetry.addLatency(random.uniform(50, 150))
-        telemetry.incThroughput()
-        time.sleep(0.1)
-
-    metrics2 = telemetry.getAggregated()
-    print(json.dumps(metrics2, indent=2))
