@@ -89,3 +89,4 @@ if __name__ == "__main__":
         if i % 7 == 0:
             telemetry.addError("ModelFail", {"mdlId": "v2"})
         if i % 13 == 0:
+            telemetry.addError("DbError")
