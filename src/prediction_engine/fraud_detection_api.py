@@ -119,20 +119,3 @@ async def health_check():
 if __name__ == "__main__":
     import uvicorn
 
-    # This block is for direct execution of the script for testing/dev
-    # In production, it would be run by a Gunicorn/Uvicorn server directly.
-    parser = argparse.ArgumentParser(description="Run Snapp Fraud Detection API")
-    parser.add_argument(
-        "--env", type=str, default="dev", help="Environment (dev or prod)"
-    )
-    parser.add_argument("--host", type=str, default="0.0.0.0", help="Host address")
-    parser.add_argument("--port", type=int, default=8000, help="Port to run the API on")
-    args = parser.parse_args()
-
-    # Manually call startup_event for direct script execution
-    # This mimics what FastAPI does internally on startup
-    import asyncio
-
-    asyncio.run(startup_event())
-
-    uvicorn.run(app, host=args.host, port=args.port)
