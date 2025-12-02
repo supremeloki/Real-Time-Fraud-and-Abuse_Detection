@@ -119,3 +119,5 @@ async def health_check():
 if __name__ == "__main__":
     import uvicorn
 
+    # This block is for direct execution of the script for testing/dev
+    # In production, it would be run by a Gunicorn/Uvicorn server directly.
