@@ -370,3 +370,9 @@ class InferenceEngine:
             self.lightgbm_model is not None or self.gnn_model is not None
         )
 
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Test Inference Engine")
+    parser.add_argument(
+        "--env", type=str, default="dev", help="Environment (dev or prod)"
+    )
