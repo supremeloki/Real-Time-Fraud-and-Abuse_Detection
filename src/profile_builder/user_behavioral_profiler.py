@@ -235,3 +235,7 @@ if __name__ == "__main__":
             "fare_amount": np.random.uniform(40000, 80000),
             "distance_km": np.random.uniform(5, 15),
             "duration_min": np.random.uniform(10, 30),
+            "promo_code_used": None,
+        }
+    )
+
