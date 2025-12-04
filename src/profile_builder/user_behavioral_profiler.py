@@ -235,21 +235,3 @@ if __name__ == "__main__":
             "fare_amount": np.random.uniform(40000, 80000),
             "distance_km": np.random.uniform(5, 15),
             "duration_min": np.random.uniform(10, 30),
-            "promo_code_used": None,
-        }
-    )
-
-    print("--- Updating User Profile with Simulated Events ---")
-    for event in events_to_simulate:
-        profiler.update_user_profile(event)
-
-    print("\n--- Generating Behavioral Features for User ---")
-    user_features = profiler.get_user_behavioral_features(test_user_id, current_time)
-    print(json.dumps(user_features, indent=2))
-
-    # Clean up for demo
-    profiler.redis_client.redis_client.delete(
-        profiler._get_user_profile_key(test_user_id)
-    )
-    for event in events_to_simulate:
-        profiler.redis_client.delete_key(f"event:{event['event_id']}")
