@@ -100,4 +100,3 @@ class ThreatIntelligenceFeed:
                 f"Promo code on watchlist detected for event {event.get('event_id')}: {event['promo_code_used']}"
             )
 
-        return threat_status
