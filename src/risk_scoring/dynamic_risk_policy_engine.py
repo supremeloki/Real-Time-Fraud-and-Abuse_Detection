@@ -258,3 +258,6 @@ if __name__ == "__main__":
         "fare_amount": 35000,
         "distance_km": 2.0,
         "fare_per_km": 17500,
+        "driver_multiple_short_low_fare_rides": True,
+        "driver_low_unique_user_ratio": True,
+        "is_ip_blacklisted": False,
