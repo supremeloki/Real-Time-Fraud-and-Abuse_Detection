@@ -77,3 +77,4 @@
 2025-12-08T09:43:41 tag prep cleanup
 2025-12-08T12:00:42 bump version
 2025-12-09T10:22:11 refactor pipeline builder
+2025-12-09T19:32:21 perf: avoid re-parsing rows
