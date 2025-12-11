@@ -137,3 +137,30 @@ if __name__ == "__main__":
         if i % 7 == 0:
             collector.record_error("ModelInferenceFailure", {"model_id": "v2"})
         if i % 13 == 0:
+            collector.record_error("DatabaseConnectionError")
+
+        # Throughput
+        collector.increment_throughput()
+
+        time.sleep(0.1)  # Simulate time passing
+
+    print("\n--- Aggregated Metrics (1st snapshot) ---")
+    metrics_snapshot_1 = collector.get_aggregated_metrics()
+    print(json.dumps(metrics_snapshot_1, indent=2))
+
+    print("\n--- Simulating more time passing for window expiration ---")
+    time.sleep(65)  # Sleep for more than the 60-second window
+
+    # Record a few more events
+    for i in range(5):
+        collector.record_latency(random.uniform(50, 150))
+        collector.increment_throughput()
+        time.sleep(0.1)
+
+    print("\n--- Aggregated Metrics (2nd snapshot, after window expiration) ---")
+    metrics_snapshot_2 = collector.get_aggregated_metrics()
+    print(json.dumps(metrics_snapshot_2, indent=2))
+
+    print(
+        "\nObserve how older metrics would have been purged from the window in snapshot 2."
+    )

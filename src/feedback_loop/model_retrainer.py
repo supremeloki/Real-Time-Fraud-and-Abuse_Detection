@@ -77,3 +77,65 @@ class ModelRetrainer:
 
         logger.info(f"Prepared {len(training_df)} samples for retraining.")
         return training_df
+
+    def trigger_retraining(self) -> bool:
+        if not self.last_retrain_timestamp:
+            self._load_last_retrain_info()
+
+        time_since_last_retrain = datetime.now() - self.last_retrain_timestamp
+
+        if time_since_last_retrain.days < self.retrain_interval_days:
+            logger.info(
+                f"Retraining not due. Last retrain {time_since_last_retrain.days} days ago. Next retrain in {self.retrain_interval_days - time_since_last_retrain.days} days."
+            )
+            return False
+
+        logger.info(f"Retraining triggered for {self.model_name}.")
+        training_data = self._prepare_training_data()
+
+        if training_data is None:
+            logger.error("Failed to prepare training data. Retraining aborted.")
+            return False
+
+        features = training_data.drop(columns=["true_label"])
+        labels = training_data["true_label"].astype(int)
+
+        with mlflow.start_run(
+            run_name=f"{self.model_name}_retrain_{datetime.now().strftime('%Y%m%d%H%M')}"
+        ) as run:
+            mlflow.log_param("retrain_interval_days", self.retrain_interval_days)
+            mlflow.log_param("min_data_for_retrain", self.min_data_for_retrain)
+
+            params = {
+                "objective": "binary",
+                "metric": "auc",
+                "boosting_type": "gbdt",
+                "num_leaves": 31,
+                "learning_rate": 0.05,
+                "feature_fraction": 0.9,
+                "verbose": -1,
+                "n_estimators": 100,
+            }
+            model = lgb.LGBMClassifier(**params)
+            model.fit(features, labels)
+
+            from sklearn.metrics import roc_auc_score, precision_score, recall_score
+
+            predictions = model.predict_proba(features)[:, 1]
+            auc = roc_auc_score(labels, predictions)
+            precision = precision_score(labels, (predictions > 0.5).astype(int))
+            recall = recall_score(labels, (predictions > 0.5).astype(int))
+
+            mlflow.log_metrics(
+                {"auc_score": auc, "precision": precision, "recall": recall}
+            )
+
+            mlflow.lightgbm.log_model(
+                model, "lightgbm_fraud_model", registered_model_name=self.model_name
+            )
+
+            self.last_retrain_timestamp = datetime.now()
+            logger.info(
+                f"Model {self.model_name} successfully retrained and logged to MLflow (Run ID: {run.info.run_id})."
+            )
+            return True

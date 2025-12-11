@@ -146,3 +146,35 @@ if __name__ == "__main__":
     # Clear the first critical alert logged (GraphAnomalyDetector)
     alert_to_clear_time = monitor.alert_log[0]["timestamp"]
     alert_to_clear_source = monitor.alert_log[0]["source"]
+    monitor.clear_alert(alert_to_clear_time, alert_to_clear_source)
+
+    print("\n--- Alerts After Clearing ---")
+    for alert in monitor.get_pending_alerts():
+        print(f"[{alert['severity'].upper()}] {alert['source']}: {alert['message']}")
+
+    # Ingest another alert that's similar but with different details
+    monitor.ingest_alert(
+        "GraphAnomalyDetector",
+        "Another degree centrality anomaly detected for user Z.",
+        "critical",
+        {"user_id": "userZ"},
+    )
+    print("\n--- Alerts After Ingesting a New Similar Alert ---")
+    for alert in monitor.get_pending_alerts():
+        print(f"[{alert['severity'].upper()}] {alert['source']}: {alert['message']}")
+
+    # Clear using substring
+    print("\n--- Clearing an Alert using message substring ---")
+    alert_to_clear_time_partial = monitor.alert_log[0][
+        "timestamp"
+    ]  # This will be the "userY auto-blocked" alert
+    alert_to_clear_source_partial = monitor.alert_log[0]["source"]
+    monitor.clear_alert(
+        alert_to_clear_time_partial,
+        alert_to_clear_source_partial,
+        alert_message_substring="auto-blocked",
+    )
+
+    print("\n--- Alerts After Clearing with substring ---")
+    for alert in monitor.get_pending_alerts():
+        print(f"[{alert['severity'].upper()}] {alert['source']}: {alert['message']}")

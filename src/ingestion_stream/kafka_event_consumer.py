@@ -67,3 +67,39 @@ class KafkaEventConsumer:
                     self.consumer.commit(message=msg)
 
                 except json.JSONDecodeError:
+                    self.logger.warning(
+                        f"Could not decode message as JSON: {msg.value()}"
+                    )
+                except Exception as e:
+                    self.logger.error(f"Error processing message: {e}", exc_info=True)
+
+        except KeyboardInterrupt:
+            self.logger.info("Consumer stopped by user.")
+        finally:
+            self.consumer.close()
+            self.logger.info("Kafka consumer closed.")
+
+
+def handle_incoming_event(event: dict):
+    logger.debug(
+        f"Processing event: {event.get('event_type')}, Ride ID: {event.get('ride_id')}"
+    )
+    # Placeholder for forwarding to feature engineering or direct processing
+    # In a real system, this would push to a feature pipeline or a queue for inference
+    pass
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Snapp Kafka Event Consumer")
+    parser.add_argument(
+        "--env", type=str, default="dev", help="Environment (dev or prod)"
+    )
+    args = parser.parse_args()
+
+    # Assuming 'conf' directory is sibling to 'src'
+    current_dir = Path(__file__).parent
+    project_root = current_dir.parent.parent
+    config_directory = project_root / "config"
+
+    consumer = KafkaEventConsumer(config_directory, args.env)
+    consumer.start_consuming(handle_incoming_event)

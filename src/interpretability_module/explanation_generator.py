@@ -140,3 +140,69 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     current_dir = Path(__file__).parent
+    project_root = current_dir.parent.parent
+    config_directory = project_root / "config"
+
+    exp_generator = ExplanationGenerator(config_directory, args.env)
+
+    # Mock Model and Data for testing
+    class MockLightGBMModel:
+        def predict_proba(self, X):
+            # Simulate a fraud prediction based on 'fare_amount'
+            return np.array(
+                [
+                    [0.2, 0.8] if x["fare_amount"].iloc[0] > 70000 else [0.9, 0.1]
+                    for _, x in X.iterrows()
+                ]
+            )
+
+        @property
+        def feature_name_(self):
+            return ["fare_amount", "distance_km", "duration_min", "hour_of_day"]
+
+    mock_model = MockLightGBMModel()
+    mock_feature_names = ["fare_amount", "distance_km", "duration_min", "hour_of_day"]
+    mock_background_data = pd.DataFrame(
+        np.random.rand(100, len(mock_feature_names)), columns=mock_feature_names
+    )
+    mock_background_data["fare_amount"] = mock_background_data["fare_amount"] * 100000
+    mock_background_data["distance_km"] = mock_background_data["distance_km"] * 20
+    mock_background_data["duration_min"] = mock_background_data["duration_min"] * 30
+    mock_background_data["hour_of_day"] = np.random.randint(0, 24, 100)
+
+    exp_generator.set_model_and_features(
+        mock_model, mock_feature_names, mock_background_data
+    )
+
+    test_instance_fraud = {
+        "fare_amount": 85000.0,
+        "distance_km": 10.0,
+        "duration_min": 20.0,
+        "hour_of_day": 18,
+    }
+    test_instance_non_fraud = {
+        "fare_amount": 30000.0,
+        "distance_km": 3.0,
+        "duration_min": 8.0,
+        "hour_of_day": 10,
+    }
+
+    print("Explanation for potential fraud event:")
+    explanation_fraud = exp_generator.generate_shap_explanation(test_instance_fraud)
+    print(json.dumps(explanation_fraud, indent=2))
+
+    print("\nExplanation for non-fraud event:")
+    explanation_non_fraud = exp_generator.generate_shap_explanation(
+        test_instance_non_fraud
+    )
+    print(json.dumps(explanation_non_fraud, indent=2))
+
+    print("\nSimplified GNN Node Explanation:")
+    mock_node_features = {
+        "user_graph_degree_centrality": 0.5,
+        "user_lifetime_rides": 150,
+        "user_graph_community_id": 3,
+        "user_lifetime_avg_fare": 70000,
+    }
+    gnn_exp = exp_generator.generate_explanation_for_gnn_node(mock_node_features)
+    print(json.dumps(gnn_exp, indent=2))

@@ -261,3 +261,11 @@ if __name__ == "__main__":
         "driver_multiple_short_low_fare_rides": True,
         "driver_low_unique_user_ratio": True,
         "is_ip_blacklisted": False,
+    }
+    model_pred_5 = {
+        "fraud_score": 0.7,
+        "action_recommended": "manual_review",
+    }  # Model might push it
+    print("\n--- Test Case 5: Driver Collusion Indicators ---")
+    result_5 = policy_engine.evaluate_policies(event_features_5, model_pred_5)
+    print(json.dumps(result_5, indent=2))

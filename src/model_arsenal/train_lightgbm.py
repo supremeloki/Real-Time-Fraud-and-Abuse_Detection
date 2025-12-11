@@ -156,3 +156,44 @@ class LightGBMTrainer:
             mlflow.log_metrics(
                 {
                     "auc_score": auc_score,
+                    "accuracy": accuracy,
+                    "precision": precision,
+                    "recall": recall,
+                    "f1_score": f1_score,
+                    "pr_auc": pr_auc,
+                }
+            )
+            self.logger.info(
+                f"Model trained. AUC: {auc_score:.4f}, Precision: {precision:.4f}, Recall: {recall:.4f}"
+            )
+
+            mlflow.lightgbm.log_model(
+                model,
+                "lightgbm_fraud_model",
+                registered_model_name="LightGBMFraudDetector",
+            )
+            self.logger.info("LightGBM model logged to MLflow.")
+            return model
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Train LightGBM Fraud Detection Model")
+    parser.add_argument(
+        "--env", type=str, default="dev", help="Environment (dev or prod)"
+    )
+    args = parser.parse_args()
+
+    current_dir = Path(__file__).parent
+    project_root = current_dir.parent.parent
+    config_directory = project_root / "config"
+
+    trainer = LightGBMTrainer(config_directory, args.env)
+    X, y = trainer.load_and_prepare_data()
+
+    if not X.empty:
+        X_train, X_val, y_train, y_val = train_test_split(
+            X, y, test_size=0.2, random_state=42, stratify=y
+        )
+        trainer.train_model(X_train, y_train, X_val, y_val)
+    else:
+        logger.error("Training data is empty. Cannot train LightGBM model.")

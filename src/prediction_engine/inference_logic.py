@@ -376,3 +376,37 @@ if __name__ == "__main__":
     parser.add_argument(
         "--env", type=str, default="dev", help="Environment (dev or prod)"
     )
+    args = parser.parse_args()
+
+    current_dir = Path(__file__).parent
+    project_root = current_dir.parent.parent
+    config_directory = project_root / "config"
+
+    engine = InferenceEngine(config_directory, args.env)
+
+    # Example event
+    test_event = {
+        "event_id": "test_event_12345",
+        "event_timestamp": datetime.now().isoformat(),
+        "event_type": "ride_completed",
+        "user_id": "test_user_123",
+        "driver_id": "test_driver_456",
+        "ride_id": "test_ride_789",
+        "start_location_lat": 35.72,
+        "start_location_lon": 51.42,
+        "end_location_lat": 35.73,
+        "end_location_lon": 51.43,
+        "fare_amount": 75000.0,
+        "distance_km": 8.5,
+        "duration_min": 25.0,
+        "payment_method": "credit_card",
+        "promo_code_used": None,
+        "device_info": "android_12",
+        "ip_address": "192.168.1.100",
+    }
+
+    if engine.is_ready():
+        prediction = engine.run_inference(test_event)
+        print(f"Prediction result: {prediction}")
+    else:
+        logger.error("Inference engine not ready. Check model loading or dependencies.")

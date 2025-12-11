@@ -45,3 +45,49 @@ class RealtimeFeatureEngineer:
         )
 
         user_id = event.get("user_id")
+        driver_id = event.get("driver_id")
+
+        if user_id:
+            user_history = self._get_entity_history(user_id, "user")
+            user_history.append({"event_timestamp": event_timestamp, **event})
+
+            for window in self.time_windows_minutes:
+                self._clean_history(user_history, event_timestamp, window)
+                window_df = pd.DataFrame(list(user_history))
+
+                if not window_df.empty:
+                    processed_features[f"user_avg_fare_{window}min"] = window_df[
+                        "fare_amount"
+                    ].mean()
+                    processed_features[f"user_total_rides_{window}min"] = len(window_df)
+                    processed_features[f"user_max_distance_{window}min"] = window_df[
+                        "distance_km"
+                    ].max()
+                else:
+                    processed_features[f"user_avg_fare_{window}min"] = 0.0
+                    processed_features[f"user_total_rides_{window}min"] = 0
+                    processed_features[f"user_max_distance_{window}min"] = 0.0
+
+        if driver_id:
+            driver_history = self._get_entity_history(driver_id, "driver")
+            driver_history.append({"event_timestamp": event_timestamp, **event})
+
+            for window in self.time_windows_minutes:
+                self._clean_history(driver_history, event_timestamp, window)
+                window_df = pd.DataFrame(list(driver_history))
+
+                if not window_df.empty:
+                    processed_features[f"driver_avg_fare_{window}min"] = window_df[
+                        "fare_amount"
+                    ].mean()
+                    processed_features[f"driver_total_rides_{window}min"] = len(
+                        window_df
+                    )
+                else:
+                    processed_features[f"driver_avg_fare_{window}min"] = 0.0
+                    processed_features[f"driver_total_rides_{window}min"] = 0
+
+        logger.debug(
+            f"Generated {len(processed_features)} real-time features for event {event.get('event_id')}."
+        )
+        return processed_features

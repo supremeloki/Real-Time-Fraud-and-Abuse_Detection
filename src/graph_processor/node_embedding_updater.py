@@ -57,3 +57,39 @@ class NodeEmbeddingUpdater:
             )
         elif len(feature_vector) > self.embedding_dimension:
             feature_vector = feature_vector[: self.embedding_dimension]
+
+        norm = np.linalg.norm(feature_vector)
+        if norm > 0:
+            feature_vector = feature_vector / norm
+
+        updated_embedding = (self.decay_factor * current_embedding) + (
+            (1 - self.decay_factor) * feature_vector
+        )
+        updated_embedding = updated_embedding / np.linalg.norm(updated_embedding)
+
+        if entity_type == "user":
+            self.user_embeddings[entity_id] = updated_embedding
+        elif entity_type == "driver":
+            self.driver_embeddings[entity_id] = updated_embedding
+        logger.debug(f"Updated {entity_type} embedding for {entity_id}.")
+
+    def process_event(self, event: Dict[str, Any]):
+        user_id = event.get("user_id")
+        driver_id = event.get("driver_id")
+
+        if user_id:
+            self._update_embedding(user_id, "user", event)
+        if driver_id:
+            self._update_embedding(driver_id, "driver", event)
+
+        logger.info(f"Node embeddings processed for event {event.get('event_id')}.")
+
+    def get_combined_embeddings(
+        self, user_id: str = None, driver_id: str = None
+    ) -> Dict[str, np.ndarray]:
+        combined_embs = {}
+        if user_id:
+            combined_embs["user_embedding"] = self._get_embedding(user_id, "user")
+        if driver_id:
+            combined_embs["driver_embedding"] = self._get_embedding(driver_id, "driver")
+        return combined_embs

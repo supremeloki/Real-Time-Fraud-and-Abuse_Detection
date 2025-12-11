@@ -227,3 +227,163 @@ class GraphAnomalyDetector:
         """
         # This function would be called by a separate batch process after a period
         # to update the `historical_centrality` in Redis.
+        # For simplicity, we just update it in memory for demo.
+
+        for metric_type, node_metrics in new_metrics.items():
+            for node, value in node_metrics.items():
+                if node not in self.historical_centrality:
+                    self.historical_centrality[node] = {
+                        f"{metric_type}_history": [value],
+                        f"{metric_type}_mean": value,
+                        f"{metric_type}_std": 0.0,
+                    }
+                else:
+                    history = self.historical_centrality[node].get(
+                        f"{metric_type}_history", []
+                    )
+                    history.append(value)
+                    # Keep history bounded for calculation
+                    if len(history) > 100:  # Max 100 points for stats
+                        history = history[-100:]
+
+                    self.historical_centrality[node][f"{metric_type}_history"] = history
+                    self.historical_centrality[node][f"{metric_type}_mean"] = np.mean(
+                        history
+                    )
+                    self.historical_centrality[node][f"{metric_type}_std"] = np.std(
+                        history
+                    )
+
+        self.redis_client.set_value(
+            self.historical_centrality_key, self.historical_centrality
+        )
+        logger.info("Historical centrality stats updated in Redis.")
+
+
+if __name__ == "__main__":
+    import json
+
+    # Dummy Redis configuration for local testing
+    redis_conf_demo = {
+        "redis_host": "localhost",
+        "redis_port": 6379,
+        "redis_db": 5,  # Dedicated DB for this demo
+        "default_ttl_seconds": 3600,
+    }
+
+    detector = GraphAnomalyDetector(
+        redis_conf_demo, window_hours=1, centrality_deviation_threshold=2.0
+    )
+
+    try:
+        detector.redis_client.check_connection()
+    except Exception as e:
+        print(
+            f"Could not connect to Redis: {e}. Please ensure Redis is running on localhost:6379."
+        )
+        exit()
+
+    current_time = datetime.now()
+
+    # Simulate initial events to build up graph and historical stats
+    print("--- Building Initial Graph and Historical Stats ---")
+    for i in range(10):
+        event = {
+            "event_id": f"initial_e{i}",
+            "event_timestamp": (
+                current_time - timedelta(minutes=5 * (9 - i))
+            ).isoformat(),
+            "user_id": f"user_{i%3}",
+            "driver_id": f"driver_{i%2}",
+        }
+        detector.update_graph_state(event)
+
+    # Manually update historical stats (normally a background job)
+    detector.update_historical_centrality_stats(detector._calculate_metrics_for_graph())
+    print(
+        f"Initial historical centrality stats: {json.dumps(detector.historical_centrality, indent=2)}"
+    )
+
+    # Scenario 1: Normal event, no anomalies
+    print("\n--- Scenario 1: Normal Event ---")
+    normal_event = {
+        "event_id": "normal_e1",
+        "event_timestamp": (current_time + timedelta(minutes=1)).isoformat(),
+        "user_id": "user_0",
+        "driver_id": "driver_1",
+    }
+    detector.update_graph_state(normal_event)
+    anomalies_1 = detector.analyze_graph_for_anomalies(
+        datetime.fromisoformat(normal_event["event_timestamp"])
+    )
+    print(f"Anomalies detected: {json.dumps(anomalies_1, indent=2)}")
+
+    # Scenario 2: High degree centrality spike for a user
+    print("\n--- Scenario 2: High Degree Centrality Spike ---")
+    spike_user_id = "user_spike_A"
+    for i in range(5):
+        event = {
+            "event_id": f"spike_e{i}",
+            "event_timestamp": (current_time + timedelta(minutes=10 + i)).isoformat(),
+            "user_id": spike_user_id,
+            "driver_id": f"driver_new_{i}",
+        }
+        detector.update_graph_state(event)
+
+    anomalies_2 = detector.analyze_graph_for_anomalies(
+        datetime.fromisoformat(event["event_timestamp"])
+    )
+    print(
+        f"Anomalies detected (User {spike_user_id} now in graph): {json.dumps(anomalies_2, indent=2)}"
+    )
+
+    # To see a Z-score anomaly, 'user_spike_A' needs a historical mean and a low std_dev first,
+    # then a sudden spike. For this demo, it would be 'new_node_high_degree' behavior, not Z-score.
+    # To demonstrate Z-score, we'd need to simulate historical data for 'user_spike_A' first.
+    # For now, if it appears as a new node with high degree, it implicitly indicates an anomaly.
+
+    # Scenario 3: Potential collusion (dense small community forming)
+    print("\n--- Scenario 3: Potential Collusion (Dense Small Community) ---")
+    collusion_time = current_time + timedelta(minutes=30)
+    collusion_users = ["coll_u1", "coll_u2"]
+    collusion_drivers = ["coll_d1", "coll_d2"]
+
+    events_collusion = [
+        {
+            "event_id": "coll_e1",
+            "event_timestamp": (collusion_time + timedelta(minutes=1)).isoformat(),
+            "user_id": collusion_users[0],
+            "driver_id": collusion_drivers[0],
+        },
+        {
+            "event_id": "coll_e2",
+            "event_timestamp": (collusion_time + timedelta(minutes=2)).isoformat(),
+            "user_id": collusion_users[1],
+            "driver_id": collusion_drivers[0],
+        },
+        {
+            "event_id": "coll_e3",
+            "event_timestamp": (collusion_time + timedelta(minutes=3)).isoformat(),
+            "user_id": collusion_users[0],
+            "driver_id": collusion_drivers[1],
+        },
+        {
+            "event_id": "coll_e4",
+            "event_timestamp": (collusion_time + timedelta(minutes=4)).isoformat(),
+            "user_id": collusion_users[1],
+            "driver_id": collusion_drivers[1],
+        },
+    ]
+    for event in events_collusion:
+        detector.update_graph_state(event)
+
+    anomalies_3 = detector.analyze_graph_for_anomalies(
+        datetime.fromisoformat(events_collusion[-1]["event_timestamp"])
+    )
+    print(
+        f"Anomalies detected (Collusion attempt): {json.dumps(anomalies_3, indent=2)}"
+    )
+
+    # Clean up Redis
+    detector.redis_client.delete_key(detector.historical_centrality_key)
+    print(f"\nCleaned up Redis DB {redis_conf_demo['redis_db']}.")

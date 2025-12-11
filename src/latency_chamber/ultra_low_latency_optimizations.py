@@ -66,3 +66,31 @@ class LatencyOptimizer:
         if budget is not None and actual_latency_ms > budget:
             logger.warning(
                 f"Latency breach for {component_name}: Actual {actual_latency_ms:.2f}ms > Budget {budget}ms"
+            )
+            return True
+        return False
+
+
+# Example usage of @optimize_inference decorator
+@optimize_inference
+def dummy_feature_computation(data):
+    time.sleep(0.01)  # Simulate computation
+    return data * 2
+
+
+if __name__ == "__main__":
+    from src.utils.common_helpers import load_config
+
+    current_dir = Path(__file__).parent
+    project_root = current_dir.parent.parent
+    config_directory = project_root / "config"
+    config = load_config(config_directory, "dev")
+
+    latency_optimizer = LatencyOptimizer(config["thresholds"]["latency_budget_ms"])
+
+    # Test decorator
+    result = dummy_feature_computation(5)
+
+    # Test latency check
+    latency_optimizer.check_latency_breach("feature_extraction", 25)
+    latency_optimizer.check_latency_breach("total_decision_time", 100)

@@ -219,3 +219,126 @@ class TemporalGraphAnalyzer:
         if len(events_df) > 5:  # Need enough data for a trend
             # Calculate simple linear trend of fare_amount over event_timestamp
             try:
+                x = (
+                    (events_df["event_timestamp"] - events_df["event_timestamp"].min())
+                    .dt.total_seconds()
+                    .values.reshape(-1, 1)
+                )
+                y_fare = events_df["fare_amount"].values
+                y_distance = events_df["distance_km"].values
+
+                from sklearn.linear_model import LinearRegression
+
+                lr_fare = LinearRegression().fit(x, y_fare)
+                lr_distance = LinearRegression().fit(x, y_distance)
+
+                node_temporal_features[f"{prefix}_fare_trend_slope"] = lr_fare.coef_[0]
+                node_temporal_features[f"{prefix}_distance_trend_slope"] = (
+                    lr_distance.coef_[0]
+                )
+            except Exception as e:
+                logger.warning(f"Could not calculate trend for {node_id}: {e}")
+                node_temporal_features[f"{prefix}_fare_trend_slope"] = 0.0
+                node_temporal_features[f"{prefix}_distance_trend_slope"] = 0.0
+        else:
+            node_temporal_features[f"{prefix}_fare_trend_slope"] = 0.0
+            node_temporal_features[f"{prefix}_distance_trend_slope"] = 0.0
+
+        return node_temporal_features
+
+
+if __name__ == "__main__":
+    from src.utils.common_helpers import setup_logging
+    import json
+
+    setup_logging("TemporalGraphAnalyzerDemo", level="INFO")
+
+    redis_config_for_demo = {
+        "redis_host": "localhost",
+        "redis_port": 6379,
+        "redis_db": 3,
+        "default_ttl_seconds": 3600,
+    }
+
+    analyzer = TemporalGraphAnalyzer(
+        redis_config_for_demo, time_window_hours=1, max_history_days=2
+    )
+
+    try:
+        analyzer.redis_client.redis_client.ping()
+        print("Connected to Redis for demo.")
+    except Exception as e:
+        print(
+            f"Could not connect to Redis: {e}. Please ensure Redis is running on localhost:6379."
+        )
+        exit()
+
+    test_user_id = "user_temp_graph_1"
+    test_driver_id = "driver_temp_graph_A"
+    test_driver_id_2 = "driver_temp_graph_B"
+
+    current_time = datetime.now()
+
+    print("--- Simulating Events to Update Temporal Graph State ---")
+
+    # 1. Normal events for user and driver
+    for i in range(3):
+        event = {
+            "event_id": f"n_e{i}",
+            "event_timestamp": (current_time - timedelta(minutes=i * 10)).isoformat(),
+            "event_type": "ride_completed",
+            "user_id": test_user_id,
+            "driver_id": test_driver_id,
+            "fare_amount": 50000 + i * 1000,
+            "distance_km": 10 + i,
+            "duration_min": 20 + i,
+        }
+        analyzer.update_temporal_graph_state(event)
+
+    # 2. Rapid interaction spike for user and a different driver
+    for i in range(4):
+        event = {
+            "event_id": f"r_e{i}",
+            "event_timestamp": (current_time - timedelta(minutes=1 + i)).isoformat(),
+            "event_type": "ride_completed",
+            "user_id": test_user_id,
+            "driver_id": test_driver_id_2,
+            "fare_amount": 20000 + i * 500,
+            "distance_km": 2 + i * 0.5,
+            "duration_min": 5 + i,
+        }
+        analyzer.update_temporal_graph_state(event)
+
+    print("\n--- Analyzing Temporal Patterns for User and Driver ---")
+
+    # Analyze for the current moment
+    temporal_features = analyzer.analyze_temporal_patterns(
+        test_user_id, test_driver_id_2, current_time
+    )
+    print(
+        f"\nTemporal features for {test_user_id} and {test_driver_id_2} (current time):\n{json.dumps(temporal_features, indent=2)}"
+    )
+
+    temporal_features_old = analyzer.analyze_temporal_patterns(
+        test_user_id, test_driver_id, current_time
+    )
+    print(
+        f"\nTemporal features for {test_user_id} and {test_driver_id} (current time):\n{json.dumps(temporal_features_old, indent=2)}"
+    )
+
+    # Simulate a later time, so some events fall out of the window
+    future_time = current_time + timedelta(hours=1.5)
+    print(f"\n--- Analyzing Temporal Patterns at a later time ({future_time}) ---")
+    temporal_features_future = analyzer.analyze_temporal_patterns(
+        test_user_id, test_driver_id_2, future_time
+    )
+    print(
+        f"\nTemporal features for {test_user_id} and {test_driver_id_2} (future time):\n{json.dumps(temporal_features_future, indent=2)}"
+    )
+
+    # Clean up Redis data
+    for node_id in [test_user_id, test_driver_id, test_driver_id_2]:
+        analyzer.redis_client.redis_client.delete(analyzer._get_node_event_key(node_id))
+    print(
+        f"\nCleaned up data for demo in Redis DB {redis_config_for_demo['redis_db']}."
+    )
